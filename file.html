@@ -23,7 +23,9 @@
         times: 3,
         interval: 500,
         errorFilter: function(err) {
-          return err.message.match('oh no'); // only retry on 'oh no's. 
+          // switch commenting to see match/not match case
+          return err.message.match('oh no'); // only retry on 'oh no's.
+          // return err.message.match('not the error message'); // calls myFunc once, then retryCallback
         }
       }
       function retryCallback(err, results) {

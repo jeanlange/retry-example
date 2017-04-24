@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- works the same either way. Got both link & download from http://caolan.github.io/async/ in April 2017 -->
+    <!--script type="text/javascript" src="https://cdn.jsdelivr.net/async/2.3.0/async.js"></script-->
+    <script type="text/javascript" src="async.js"></script>
+    <script type="text/javascript">
+      // my problem: I have a function that looks like this that might succeed/fail that I want to retry if it fails.
+      function myFunc(param1, callback) {
+        console.log('process is go! param1: ', param1);
+        // switch commenting to see success/failure case.
+        callback(new Error("oh no an error"));
+        // callback(null, {some: "results"});
+      }
+      // glorious success! switch ye olde order.
+       // this matches the description of what a task should look like at https://github.com/caolan/async/blob/v1.5.2/README.md#retry - namely, the callback is first.
+       // it does not match the description at http://caolan.github.io/async/docs.html#retry - follow the 'AsyncFunction' link through to http://caolan.github.io/async/global.html, which says that the final parameter should be the callback.
+      function wrapper(cb, results) {
+        myFunc(this.param1, cb);
+      }
+
+      var retryOptions = {
+        times: 3,
+        interval: 500
+      }
+      function retryCallback(err, results) {
+        console.log('retry callback. Err ', err, ' results, ', results);
+      }
+
+      async.retry(retryOptions, wrapper.bind({param1: 2}), retryCallback);
+
+      // found this example at http://stackoverflow.com/questions/28977661/determining-success-failure-with-node-js-function-async-retry and mildly edited it.
+      // function countUp(cb, results) {
+      //   ++this.count;
+      //   console.log(this.count, results);
+      //   if (this.count > 0) cb(null, this.count);
+      //   else cb(new Error("count too low"));
+      // }
+      // async.retry(7, countUp.bind({count:-3}), function (err, results) {
+      //    console.log('retry callback', err, results);
+      // });
+    </script>
+  </head>
+  <body>
+    holla world
+  </body>
+</html>

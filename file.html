@@ -21,7 +21,10 @@
 
       var retryOptions = {
         times: 3,
-        interval: 500
+        interval: 500,
+        errorFilter: function(err) {
+          return err.message.match('oh no'); // only retry on 'oh no's. 
+        }
       }
       function retryCallback(err, results) {
         console.log('retry callback. Err ', err, ' results, ', results);
